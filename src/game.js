@@ -6,14 +6,30 @@ let canvas, ctx;
 
 // Game constants
 const WIDTH = 500;
-const HEIGHT = 800;
+const BASE_HEIGHT = 800;
+let HEIGHT = BASE_HEIGHT;
 const SUB_STEPS = 8; // Sub-stepping count for physics precision
+
+const difficultySettings = {
+  normal: {
+    label: 'NORMAL',
+    balls: 3,
+    gravity: 900,
+  },
+  practice: {
+    label: 'PRACTICA',
+    balls: 5,
+    gravity: 820,
+  },
+};
 
 // Game state
 const state = {
   score: 0,
   highScore: parseInt(localStorage.getItem('rock_pinball_highscore') || '0', 10),
   balls: 3,
+  maxBalls: 3,
+  difficulty: 'normal',
   multiplier: 1,
   gameState: 'START', // 'START', 'PLAYING', 'GAMEOVER'
   activeBandMode: 'NONE', // 'NONE', 'NIRVANA', 'GNR', 'RATM'
@@ -25,6 +41,21 @@ const state = {
 
 // Keyboard inputs state
 const keys = {};
+const controlledKeys = new Set([' ', 'arrowleft', 'arrowright', 'a', 'l', 'm', 'r', 't']);
+const scheduledTimers = new Set();
+
+let startScreen;
+let settingsPanel;
+let menuToggle;
+let musicToggle;
+let scorePanel;
+let scoreCollapseTimer;
+let lastTouchEndTime = 0;
+let viewportResizeTimer;
+
+function lowerY(y) {
+  return y + Math.max(0, HEIGHT - BASE_HEIGHT);
+}
 
 // Background Image
 const bgImage = new Image();
@@ -32,7 +63,7 @@ bgImage.src = 'assets/pinball_bg.jpg';
 
 // Ball object
 const ball = {
-  pos: Vec.create(465, 750),
+  pos: Vec.create(465, lowerY(750)),
   vel: Vec.create(0, 0),
   radius: 11,
   mass: 1.0,
@@ -45,7 +76,7 @@ const ball = {
 // Plunger object
 const plunger = {
   x: 450,
-  y: 770,
+  y: lowerY(770),
   width: 30,
   height: 30,
   compression: 0,
@@ -56,7 +87,7 @@ const plunger = {
 // Flippers definition
 const flippers = {
   left: {
-    pivot: Vec.create(145, 705),
+    pivot: Vec.create(145, lowerY(705)),
     length: 70,
     radius: 8,
     angle: 0.38, // rest angle (downwards)
@@ -65,10 +96,11 @@ const flippers = {
     speed: 26,
     restSpeed: 13,
     omega: 0,
+    state: 'down',
     isLeft: true
   },
   right: {
-    pivot: Vec.create(305, 705),
+    pivot: Vec.create(305, lowerY(705)),
     length: 70,
     radius: 8,
     angle: Math.PI - 0.38, // rest angle (downwards)
@@ -77,6 +109,7 @@ const flippers = {
     speed: 26,
     restSpeed: 13,
     omega: 0,
+    state: 'down',
     isLeft: false
   }
 };
@@ -95,8 +128,8 @@ const bumpers = [
 const slingshots = [
   {
     // Left Slingshot
-    p1: Vec.create(95, 590),
-    p2: Vec.create(125, 665),
+    p1: Vec.create(95, lowerY(590)),
+    p2: Vec.create(125, lowerY(665)),
     restitution: 0.8,
     friction: 0.1,
     isSlingshot: true,
@@ -105,8 +138,8 @@ const slingshots = [
   },
   {
     // Right Slingshot
-    p1: Vec.create(355, 590),
-    p2: Vec.create(325, 665),
+    p1: Vec.create(355, lowerY(590)),
+    p2: Vec.create(325, lowerY(665)),
     restitution: 0.8,
     friction: 0.1,
     isSlingshot: true,
@@ -151,30 +184,30 @@ function initWalls() {
   walls.length = 0; // Clear array
 
   // Outer left wall
-  walls.push({ p1: Vec.create(20, 230), p2: Vec.create(20, 640), restitution: 0.6, friction: 0.05 });
+  walls.push({ p1: Vec.create(20, 230), p2: Vec.create(20, lowerY(640)), restitution: 0.6, friction: 0.05 });
   // Left outlane outer guide
-  walls.push({ p1: Vec.create(20, 640), p2: Vec.create(80, 710), restitution: 0.6, friction: 0.05 });
+  walls.push({ p1: Vec.create(20, lowerY(640)), p2: Vec.create(80, lowerY(710)), restitution: 0.6, friction: 0.05 });
 
   // Plunger lane inner wall divider
-  walls.push({ p1: Vec.create(440, 230), p2: Vec.create(440, 800), restitution: 0.6, friction: 0.05 });
+  walls.push({ p1: Vec.create(440, 230), p2: Vec.create(440, HEIGHT), restitution: 0.6, friction: 0.05 });
   // Plunger lane outer right wall
-  walls.push({ p1: Vec.create(480, 230), p2: Vec.create(480, 800), restitution: 0.6, friction: 0.05 });
+  walls.push({ p1: Vec.create(480, 230), p2: Vec.create(480, HEIGHT), restitution: 0.6, friction: 0.05 });
 
   // Right outlane outer guide
-  walls.push({ p1: Vec.create(440, 640), p2: Vec.create(380, 710), restitution: 0.6, friction: 0.05 });
+  walls.push({ p1: Vec.create(440, lowerY(640)), p2: Vec.create(380, lowerY(710)), restitution: 0.6, friction: 0.05 });
 
   // Bottom drain slanted outer structures
-  walls.push({ p1: Vec.create(20, 710), p2: Vec.create(100, 780), restitution: 0.1, friction: 0.1 });
-  walls.push({ p1: Vec.create(440, 710), p2: Vec.create(350, 780), restitution: 0.1, friction: 0.1 });
+  walls.push({ p1: Vec.create(20, lowerY(710)), p2: Vec.create(100, lowerY(780)), restitution: 0.1, friction: 0.1 });
+  walls.push({ p1: Vec.create(440, lowerY(710)), p2: Vec.create(350, lowerY(780)), restitution: 0.1, friction: 0.1 });
 
   // Inlane guide rails (slanted dividers that feed flippers or let ball go to outlane)
   // Left inlane guide
-  walls.push({ p1: Vec.create(80, 560), p2: Vec.create(125, 660), restitution: 0.4, friction: 0.05 });
-  walls.push({ p1: Vec.create(100, 700), p2: Vec.create(125, 660), restitution: 0.4, friction: 0.05 });
+  walls.push({ p1: Vec.create(80, lowerY(560)), p2: Vec.create(125, lowerY(660)), restitution: 0.4, friction: 0.05 });
+  walls.push({ p1: Vec.create(100, lowerY(700)), p2: Vec.create(125, lowerY(660)), restitution: 0.4, friction: 0.05 });
   
   // Right inlane guide
-  walls.push({ p1: Vec.create(380, 560), p2: Vec.create(335, 660), restitution: 0.4, friction: 0.05 });
-  walls.push({ p1: Vec.create(360, 700), p2: Vec.create(335, 660), restitution: 0.4, friction: 0.05 });
+  walls.push({ p1: Vec.create(380, lowerY(560)), p2: Vec.create(335, lowerY(660)), restitution: 0.4, friction: 0.05 });
+  walls.push({ p1: Vec.create(360, lowerY(700)), p2: Vec.create(335, lowerY(660)), restitution: 0.4, friction: 0.05 });
 
   // Top arch: smooth circle semi-curve connecting left wall (20, 230) to right outer wall (480, 230)
   const archCenter = Vec.create(250, 230);
@@ -217,9 +250,66 @@ function spawnParticles(x, y, color, count = 12) {
   }
 }
 
+function scheduleTimer(callback, delay) {
+  const timerId = window.setTimeout(() => {
+    scheduledTimers.delete(timerId);
+    callback();
+  }, delay);
+  scheduledTimers.add(timerId);
+  return timerId;
+}
+
+function clearScheduledTimers() {
+  for (const timerId of scheduledTimers) {
+    window.clearTimeout(timerId);
+  }
+  scheduledTimers.clear();
+}
+
+function configureViewportWorld() {
+  const viewportWidth = Math.max(1, window.innerWidth || WIDTH);
+  const viewportHeight = Math.max(1, window.innerHeight || BASE_HEIGHT);
+  document.documentElement.style.setProperty('--app-height', `${viewportHeight}px`);
+  HEIGHT = Math.max(BASE_HEIGHT, Math.round(WIDTH * (viewportHeight / viewportWidth)));
+  applyAdaptiveGeometry();
+}
+
+function resizeCanvasBackingStore() {
+  if (!canvas || !ctx) return;
+  const dpr = Math.max(1, Math.min(window.devicePixelRatio || 1, 3));
+  canvas.width = Math.round(WIDTH * dpr);
+  canvas.height = Math.round(HEIGHT * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function handleViewportChange() {
+  window.clearTimeout(viewportResizeTimer);
+  viewportResizeTimer = window.setTimeout(() => {
+    configureViewportWorld();
+    resizeCanvasBackingStore();
+    initWalls();
+    render();
+  }, 120);
+}
+
+function applyAdaptiveGeometry() {
+  plunger.y = lowerY(770);
+  flippers.left.pivot = Vec.create(145, lowerY(705));
+  flippers.right.pivot = Vec.create(305, lowerY(705));
+
+  slingshots[0].p1 = Vec.create(95, lowerY(590));
+  slingshots[0].p2 = Vec.create(125, lowerY(665));
+  slingshots[1].p1 = Vec.create(355, lowerY(590));
+  slingshots[1].p2 = Vec.create(325, lowerY(665));
+
+  if (!ball.active) {
+    resetBall();
+  }
+}
+
 // Game Reset
 function resetBall() {
-  ball.pos = Vec.create(465, 750);
+  ball.pos = Vec.create(465, lowerY(750));
   ball.vel = Vec.create(0, 0);
   ball.active = false;
   ball.onRamp = false;
@@ -227,8 +317,17 @@ function resetBall() {
 }
 
 function startGame() {
+  clearScheduledTimers();
+  window.clearTimeout(scoreCollapseTimer);
+  scorePanel?.classList.remove('is-expanded');
+  const selectedDifficulty = document.getElementById('difficulty-select')?.value || 'normal';
+  const difficulty = difficultySettings[selectedDifficulty] ? selectedDifficulty : 'normal';
+  const settings = difficultySettings[difficulty];
+
   state.score = 0;
-  state.balls = 3;
+  state.difficulty = difficulty;
+  state.maxBalls = settings.balls;
+  state.balls = settings.balls;
   state.multiplier = 1;
   state.activeBandMode = 'NONE';
   state.bandHits = { nirvana: 0, gnr: 0, rage: 0 };
@@ -237,42 +336,43 @@ function startGame() {
   state.gameState = 'PLAYING';
   state.isTilted = false;
   state.tiltCount = 0;
+  particles = [];
   resetBall();
+  if (startScreen) startScreen.classList.remove('active');
+  closeMenu();
   updateUI();
 }
 
 // Keyboard input setup
 function initInputs() {
+  window.addEventListener('gesturestart', preventBrowserGesture, { passive: false });
+  window.addEventListener('gesturechange', preventBrowserGesture, { passive: false });
+  window.addEventListener('gestureend', preventBrowserGesture, { passive: false });
+  window.addEventListener('touchmove', preventMultiTouchZoom, { passive: false });
+  window.addEventListener('touchend', preventDoubleTapZoom, { passive: false });
+
   window.addEventListener('keydown', (e) => {
     const key = e.key.toLowerCase();
+    if (controlledKeys.has(key) || controlledKeys.has(e.key)) {
+      e.preventDefault();
+    }
     
     // Resume context on first keypress
     audio.resume();
 
     if (e.key === ' ') {
-      keys['space'] = true;
+      setPlungerInput(true);
     } else {
       keys[key] = true;
     }
 
     // Flipper sound on press
-    if ((key === 'a' || e.key === 'ArrowLeft') && flippers.left.state === 'down') {
-      flippers.left.state = 'up';
-      audio.playFlipper();
-    }
-    if ((key === 'l' || e.key === 'ArrowRight') && flippers.right.state === 'down') {
-      flippers.right.state = 'up';
-      audio.playFlipper();
-    }
+    if (key === 'a' || key === 'arrowleft') setFlipperInput('left', true);
+    if (key === 'l' || key === 'arrowright') setFlipperInput('right', true);
 
     // Music toggle
     if (key === 'm') {
-      const isPlaying = audio.toggleMusic();
-      const muteBtn = document.getElementById('music-toggle');
-      if (muteBtn) {
-        muteBtn.textContent = isPlaying ? '🔊 MUSIC ON' : '🔇 MUSIC OFF';
-        muteBtn.classList.toggle('active', isPlaying);
-      }
+      toggleMusic();
     }
 
     // Reset / Start
@@ -288,19 +388,176 @@ function initInputs() {
 
   window.addEventListener('keyup', (e) => {
     const key = e.key.toLowerCase();
+    if (controlledKeys.has(key) || controlledKeys.has(e.key)) {
+      e.preventDefault();
+    }
     if (e.key === ' ') {
-      keys['space'] = false;
+      setPlungerInput(false);
     } else {
       keys[key] = false;
     }
 
-    if (key === 'a' || e.key === 'ArrowLeft') {
-      flippers.left.state = 'down';
-    }
-    if (key === 'l' || e.key === 'ArrowRight') {
-      flippers.right.state = 'down';
+    if (key === 'a' || key === 'arrowleft') setFlipperInput('left', false);
+    if (key === 'l' || key === 'arrowright') setFlipperInput('right', false);
+  });
+}
+
+function preventBrowserGesture(e) {
+  e.preventDefault();
+}
+
+function preventMultiTouchZoom(e) {
+  if (e.touches.length > 1) {
+    e.preventDefault();
+  }
+}
+
+function preventDoubleTapZoom(e) {
+  const now = Date.now();
+  if (now - lastTouchEndTime < 320) {
+    e.preventDefault();
+  }
+  lastTouchEndTime = now;
+}
+
+function setFlipperInput(side, isPressed) {
+  const flipper = flippers[side];
+  const keyName = side === 'left' ? 'a' : 'l';
+  keys[keyName] = isPressed;
+
+  if (isPressed && flipper.state !== 'up') {
+    flipper.state = 'up';
+    audio.playFlipper();
+  } else if (!isPressed) {
+    flipper.state = 'down';
+  }
+}
+
+function setPlungerInput(isPressed) {
+  keys.space = isPressed;
+}
+
+function initTouchControls() {
+  bindHoldZone(document.getElementById('touch-left-flipper'), () => setFlipperInput('left', true), () => setFlipperInput('left', false));
+  bindHoldZone(document.getElementById('touch-right-flipper'), () => setFlipperInput('right', true), () => setFlipperInput('right', false));
+  bindPlungerZone(document.getElementById('touch-plunger'));
+}
+
+function bindHoldZone(element, onPress, onRelease) {
+  if (!element) return;
+
+  element.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    element.setPointerCapture?.(e.pointerId);
+    element.classList.add('is-pressed');
+    audio.resume();
+    onPress();
+  });
+
+  const release = (e) => {
+    e.preventDefault();
+    element.classList.remove('is-pressed');
+    onRelease();
+  };
+
+  element.addEventListener('pointerup', release);
+  element.addEventListener('pointercancel', release);
+  element.addEventListener('lostpointercapture', () => {
+    element.classList.remove('is-pressed');
+    onRelease();
+  });
+}
+
+function bindPlungerZone(element) {
+  if (!element) return;
+
+  let dragStartY = 0;
+  let pointerActive = false;
+
+  element.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    pointerActive = true;
+    dragStartY = e.clientY;
+    element.setPointerCapture?.(e.pointerId);
+    element.classList.add('is-pressed');
+    audio.resume();
+    setPlungerInput(true);
+  });
+
+  element.addEventListener('pointermove', (e) => {
+    if (!pointerActive || ball.active) return;
+    e.preventDefault();
+    const dragDistance = Math.max(0, e.clientY - dragStartY);
+    const dragCharge = Math.min(plunger.maxCompression, dragDistance * 0.55);
+    plunger.compression = Math.max(plunger.compression, dragCharge);
+  });
+
+  const release = (e) => {
+    e.preventDefault();
+    pointerActive = false;
+    element.classList.remove('is-pressed');
+    setPlungerInput(false);
+  };
+
+  element.addEventListener('pointerup', release);
+  element.addEventListener('pointercancel', release);
+  element.addEventListener('lostpointercapture', () => {
+    pointerActive = false;
+    element.classList.remove('is-pressed');
+    setPlungerInput(false);
+  });
+}
+
+function initUIControls() {
+  startScreen = document.getElementById('start-screen');
+  settingsPanel = document.getElementById('settings-panel');
+  menuToggle = document.getElementById('menu-toggle');
+  musicToggle = document.getElementById('music-toggle');
+  scorePanel = document.getElementById('score-panel');
+
+  document.getElementById('start-btn')?.addEventListener('click', () => {
+    audio.resume();
+    startGame();
+    const startMusic = document.getElementById('start-music');
+    if (startMusic?.checked && !audio.musicEnabled) {
+      toggleMusic();
+    } else {
+      syncMusicButton();
     }
   });
+
+  document.getElementById('reset-btn')?.addEventListener('click', () => {
+    audio.resume();
+    startGame();
+  });
+
+  musicToggle?.addEventListener('click', () => toggleMusic());
+  menuToggle?.addEventListener('click', () => toggleMenu());
+  document.getElementById('menu-close')?.addEventListener('click', () => closeMenu());
+}
+
+function toggleMenu() {
+  if (!settingsPanel) return;
+  const isOpen = settingsPanel.classList.toggle('open');
+  settingsPanel.setAttribute('aria-hidden', String(!isOpen));
+  menuToggle?.setAttribute('aria-expanded', String(isOpen));
+}
+
+function closeMenu() {
+  settingsPanel?.classList.remove('open');
+  settingsPanel?.setAttribute('aria-hidden', 'true');
+  menuToggle?.setAttribute('aria-expanded', 'false');
+}
+
+function toggleMusic() {
+  const isPlaying = audio.toggleMusic();
+  syncMusicButton(isPlaying);
+}
+
+function syncMusicButton(isPlaying = audio.musicEnabled) {
+  if (!musicToggle) return;
+  musicToggle.textContent = isPlaying ? 'Music On' : 'Music Off';
+  musicToggle.classList.toggle('active', isPlaying);
 }
 
 function triggerTilt() {
@@ -326,18 +583,27 @@ function triggerTilt() {
 
 // UI display updates
 function updateUI() {
-  document.getElementById('score-val').textContent = state.score.toLocaleString();
-  document.getElementById('high-val').textContent = state.highScore.toLocaleString();
-  document.getElementById('multiplier-val').textContent = `${state.multiplier}x`;
+  const scoreVal = document.getElementById('score-val');
+  const hudMultiplierVal = document.getElementById('hud-multiplier-val');
+  const hudModeVal = document.getElementById('hud-mode-val');
+  const highVal = document.getElementById('high-val');
+  const multiplierVal = document.getElementById('multiplier-val');
+  const difficultyVal = document.getElementById('difficulty-val');
+  if (scoreVal) scoreVal.textContent = state.score.toLocaleString();
+  if (hudMultiplierVal) hudMultiplierVal.textContent = `${state.multiplier}x`;
+  if (hudModeVal) hudModeVal.textContent = state.isTilted ? 'TILT' : state.activeBandMode === 'NONE' ? 'READY' : state.activeBandMode;
+  if (highVal) highVal.textContent = state.highScore.toLocaleString();
+  if (multiplierVal) multiplierVal.textContent = `${state.multiplier}x`;
+  if (difficultyVal) difficultyVal.textContent = difficultySettings[state.difficulty].label;
   
   // Balls indicator (guitar icons or text)
   const ballsContainer = document.getElementById('balls-indicator');
   if (ballsContainer) {
     ballsContainer.innerHTML = '';
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < state.maxBalls; i++) {
       const git = document.createElement('span');
       git.className = `guitar-icon ${i < state.balls ? 'active' : 'spent'}`;
-      git.innerHTML = '🎸';
+      git.textContent = '🎸';
       ballsContainer.appendChild(git);
     }
   }
@@ -381,13 +647,27 @@ function updateUI() {
 // Add Score and handle achievements
 function addScore(points) {
   if (state.isTilted || state.gameState !== 'PLAYING') return;
-  state.score += points * state.multiplier;
+  const awardedPoints = points * state.multiplier;
+  state.score += awardedPoints;
   
   if (state.score > state.highScore) {
     state.highScore = state.score;
     localStorage.setItem('rock_pinball_highscore', state.highScore.toString());
   }
   updateUI();
+  showScorePanel(awardedPoints);
+}
+
+function showScorePanel(points) {
+  const lastScoreVal = document.getElementById('last-score-val');
+  if (lastScoreVal) lastScoreVal.textContent = `+${points.toLocaleString()}`;
+  if (!scorePanel) return;
+
+  scorePanel.classList.add('is-expanded');
+  window.clearTimeout(scoreCollapseTimer);
+  scoreCollapseTimer = window.setTimeout(() => {
+    scorePanel.classList.remove('is-expanded');
+  }, 1800);
 }
 
 // Physics Sub-Step Update
@@ -486,7 +766,7 @@ function updatePhysics(sub_dt) {
   // Normal physical movement
   if (ball.active) {
     // Apply gravity
-    ball.vel.y += 900 * sub_dt;
+    ball.vel.y += difficultySettings[state.difficulty].gravity * sub_dt;
     // Air resistance
     ball.vel = Vec.mult(ball.vel, 1 - 0.05 * sub_dt);
 
@@ -579,7 +859,7 @@ function updatePhysics(sub_dt) {
         if (allDown) {
           addScore(20000);
           // Spawn extra particles and reset drop targets
-          setTimeout(() => {
+          scheduleTimer(() => {
             for (const t of dropTargets) {
               t.active = true;
               t.flashTime = 10;
@@ -622,7 +902,7 @@ function updatePhysics(sub_dt) {
             state.multiplier += 1;
             addScore(25000);
             // Reset lanes after a delay
-            setTimeout(() => {
+            scheduleTimer(() => {
               for (const l of rolloverLanes) l.lit = false;
             }, 1000);
           }
@@ -736,13 +1016,32 @@ function drawWalls() {
   ctx.restore();
 }
 
+function drawCoverImage(image, x, y, width, height) {
+  const imageRatio = image.naturalWidth / image.naturalHeight;
+  const targetRatio = width / height;
+  let sx = 0;
+  let sy = 0;
+  let sw = image.naturalWidth;
+  let sh = image.naturalHeight;
+
+  if (imageRatio > targetRatio) {
+    sw = image.naturalHeight * targetRatio;
+    sx = (image.naturalWidth - sw) / 2;
+  } else {
+    sh = image.naturalWidth / targetRatio;
+    sy = (image.naturalHeight - sh) / 2;
+  }
+
+  ctx.drawImage(image, sx, sy, sw, sh, x, y, width, height);
+}
+
 // Draw the entire scene
 function render() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
   // 1. Draw Background texture
   if (bgImage.complete && bgImage.naturalWidth !== 0) {
-    ctx.drawImage(bgImage, 0, 0, WIDTH, HEIGHT);
+    drawCoverImage(bgImage, 0, 0, WIDTH, HEIGHT);
   } else {
     // Fallback retro style background
     ctx.fillStyle = '#121214';
@@ -1052,13 +1351,18 @@ window.addEventListener('load', () => {
   canvas = document.getElementById('pinball-canvas');
   ctx = canvas.getContext('2d');
 
-  canvas.width = WIDTH;
-  canvas.height = HEIGHT;
+  configureViewportWorld();
+  resizeCanvasBackingStore();
 
   // Initialize systems
   initWalls();
+  initUIControls();
   initInputs();
+  initTouchControls();
   updateUI();
+  syncMusicButton();
+  window.addEventListener('resize', handleViewportChange);
+  window.addEventListener('orientationchange', handleViewportChange);
 
   // Run loop
   requestAnimationFrame(loop);
