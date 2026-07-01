@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>90s Rock Pinball - Retro Arcade Experience</title>
+  <meta name="description" content="A nostalgic 90s rock grunge themed 2D pinball game. Fully playable in-browser with vintage Web Audio synthesizers and neon aesthetics.">
+  
+  <!-- SEO & Favicon placeholder -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎸</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@500;700;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="app-wrapper">
+    <header class="app-header">
+      <h1 class="logo-text">90S ROCK <span class="accent-text">PINBALL</span></h1>
+      <p class="subtitle">Grunge, Metal & Neon Nostalgia</p>
+    </header>
+
+    <main id="app-layout">
+      <!-- Left side: The Arcade Cabinet containing the Canvas -->
+      <section class="cabinet-wrapper">
+        <div class="cabinet-glow-strip left"></div>
+        <div class="playfield-container">
+          <canvas id="pinball-canvas"></canvas>
+        </div>
+        <div class="cabinet-glow-strip right"></div>
+      </section>
+
+      <!-- Right side: The Glassmorphic Scoreboard / Info Panel -->
+      <aside id="sidebar-panel">
+        <div class="panel-section scoring-board">
+          <h2 class="section-title">SCOREBOARD</h2>
+          <div class="score-display">
+            <span class="label">CURRENT SCORE</span>
+            <span id="score-val" class="digital-number glow-green">0</span>
+          </div>
+          <div class="score-display">
+            <span class="label">HIGH SCORE</span>
+            <span id="high-val" class="digital-number glow-gold">0</span>
+          </div>
+        </div>
+
+        <div class="panel-section balls-board">
+          <div class="stat-row">
+            <span class="label">BALLS LEFT</span>
+            <div id="balls-indicator">
+              <!-- Dynamically populated 🎸 icons -->
+            </div>
+          </div>
+          <div class="stat-row">
+            <span class="label">MULTIPLIER</span>
+            <span id="multiplier-val" class="status-value highlight-text">1x</span>
+          </div>
+        </div>
+
+        <div class="panel-section mode-board">
+          <h2 class="section-title">ACTIVE MODE</h2>
+          <div class="mode-status-box">
+            <span id="mode-text">READY TO ROCK</span>
+          </div>
+        </div>
+
+        <div class="panel-section band-progress">
+          <h2 class="section-title">BAND MODES</h2>
+          <ul class="band-list">
+            <li id="nirvana-status" class="band-item">
+              <span class="inactive-badge">[0/5]</span> NIRVANA
+            </li>
+            <li id="gnr-status" class="band-item">
+              <span class="inactive-badge">[0/5]</span> GNR
+            </li>
+            <li id="rage-status" class="band-item">
+              <span class="inactive-badge">[0/5]</span> RATM
+            </li>
+          </ul>
+          <p class="instruction-hint">Hit band bumpers 5 times to trigger Double Multiplier!</p>
+        </div>
+
+        <div class="panel-section game-controls">
+          <button id="music-toggle" class="btn">🔇 MUSIC OFF</button>
+          <button id="reset-btn" class="btn btn-secondary" onclick="window.location.reload()">🔄 RESTART APP</button>
+        </div>
+
+        <div class="panel-section help-section">
+          <h2 class="section-title">CONTROLS</h2>
+          <table class="controls-table">
+            <tr>
+              <td><span class="key-badge">A</span> or <span class="key-badge">←</span></td>
+              <td>Left Flipper</td>
+            </tr>
+            <tr>
+              <td><span class="key-badge">L</span> or <span class="key-badge">→</span></td>
+              <td>Right Flipper</td>
+            </tr>
+            <tr>
+              <td>Hold <span class="key-badge" style="width: 70px;">Space</span></td>
+              <td>Compress Spring</td>
+            </tr>
+            <tr>
+              <td>Release <span class="key-badge" style="width: 70px;">Space</span></td>
+              <td>Launch Ball</td>
+            </tr>
+            <tr>
+              <td><span class="key-badge">M</span></td>
+              <td>Toggle Music Bass</td>
+            </tr>
+            <tr>
+              <td><span class="key-badge">T</span></td>
+              <td>Nudge Table (TILT)</td>
+            </tr>
+          </table>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="app-footer">
+      <p>90s Rock Pinball &copy; 2026. Made with 🎸, ⚡, and pure nostalgia.</p>
+    </footer>
+  </div>
+
+  <!-- Main scripts -->
+  <script type="module" src="src/game.js"></script>
+</body>
+</html>

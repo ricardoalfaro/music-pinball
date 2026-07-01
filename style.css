@@ -1,0 +1,472 @@
+/* Root Variables & Colors */
+:root {
+  --bg-dark: #070709;
+  --bg-app: radial-gradient(circle at center, #1b1a22 0%, #070709 100%);
+  --panel-bg: rgba(22, 22, 28, 0.75);
+  --panel-border: rgba(255, 255, 255, 0.07);
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Syne', sans-serif;
+  --font-digital: 'Orbitron', monospace;
+
+  /* Neon Brand Colors */
+  --color-nirvana: #F7E018;
+  --color-gnr: #FF3B30;
+  --color-rage: #00F2FE;
+  --color-purple: #A100FF;
+  --color-text: #EAEAEA;
+  --color-text-dim: #9999A5;
+}
+
+/* Global Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-app);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+#app-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Header Styling */
+.app-header {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.8rem;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  text-shadow: 
+    0 0 10px rgba(255, 59, 48, 0.4),
+    0 0 25px rgba(0, 242, 254, 0.2);
+  margin-bottom: 4px;
+}
+
+.logo-text .accent-text {
+  background: linear-gradient(90deg, var(--color-gnr), var(--color-rage));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+/* Main Layout Grid */
+#app-layout {
+  display: grid;
+  grid-template-columns: 500px 1fr;
+  gap: 30px;
+  width: 100%;
+  align-items: start;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  #app-layout {
+    grid-template-columns: 1fr;
+    justify-content: center;
+  }
+  .cabinet-wrapper {
+    margin: 0 auto;
+  }
+}
+
+/* 1. Arcade Cabinet Wrapper */
+.cabinet-wrapper {
+  position: relative;
+  width: 500px;
+  height: 800px;
+  border-radius: 12px;
+  background: #111115;
+  border: 4px solid #1c1c24;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(161, 0, 255, 0.15);
+  overflow: hidden;
+  display: flex;
+}
+
+.playfield-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#pinball-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Nudge Table Shake Animation */
+@keyframes shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-8px, 5px) rotate(-0.5deg); }
+  40% { transform: translate(8px, -5px) rotate(0.5deg); }
+  60% { transform: translate(-5px, -2px) rotate(-0.3deg); }
+  80% { transform: translate(5px, 2px) rotate(0.3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shake {
+  animation: shake 0.2s ease-in-out;
+}
+
+/* Subtle CRT Scanline Overlay */
+.playfield-container::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(
+    rgba(10, 10, 15, 0) 50%, 
+    rgba(0, 0, 0, 0.3) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* Glowing Neon side rails */
+.cabinet-glow-strip {
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  z-index: 6;
+  opacity: 0.6;
+}
+
+.cabinet-glow-strip.left {
+  left: 0;
+  background: linear-gradient(to bottom, var(--color-gnr), var(--color-purple));
+  box-shadow: 2px 0 10px var(--color-gnr);
+}
+
+.cabinet-glow-strip.right {
+  right: 0;
+  background: linear-gradient(to bottom, var(--color-rage), var(--color-purple));
+  box-shadow: -2px 0 10px var(--color-rage);
+}
+
+/* 2. Glassmorphic Sidebar */
+#sidebar-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+}
+
+.panel-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 16px;
+}
+
+.panel-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+/* Score Display */
+.score-display {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.score-display:last-child {
+  margin-bottom: 0;
+}
+
+.score-display .label {
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.digital-number {
+  font-family: var(--font-digital);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.glow-green {
+  color: #39FF14;
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+}
+
+.glow-gold {
+  color: #FFB700;
+  text-shadow: 0 0 10px rgba(255, 183, 0, 0.4);
+}
+
+/* Stats Row */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.stat-row:last-child {
+  margin-bottom: 0;
+}
+
+.stat-row .label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+.status-value {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.highlight-text {
+  color: var(--color-rage);
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+  font-family: var(--font-digital);
+}
+
+/* Guitar Balls Indicator */
+#balls-indicator {
+  display: flex;
+  gap: 8px;
+}
+
+.guitar-icon {
+  font-size: 1.2rem;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.guitar-icon.spent {
+  opacity: 0.2;
+  filter: grayscale(1);
+}
+
+/* Active Mode Display */
+.mode-status-box {
+  background: rgba(10, 10, 12, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 12px;
+  text-align: center;
+  font-family: var(--font-digital);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+/* Mode Pulsing animations */
+@keyframes pulseGlowNirvana {
+  0% { text-shadow: 0 0 4px var(--color-nirvana); color: var(--color-nirvana); }
+  50% { text-shadow: 0 0 15px var(--color-nirvana); color: #fff; }
+  100% { text-shadow: 0 0 4px var(--color-nirvana); color: var(--color-nirvana); }
+}
+@keyframes pulseGlowGnr {
+  0% { text-shadow: 0 0 4px var(--color-gnr); color: var(--color-gnr); }
+  50% { text-shadow: 0 0 15px var(--color-gnr); color: #fff; }
+  100% { text-shadow: 0 0 4px var(--color-gnr); color: var(--color-gnr); }
+}
+@keyframes pulseGlowRage {
+  0% { text-shadow: 0 0 4px var(--color-rage); color: var(--color-rage); }
+  50% { text-shadow: 0 0 15px var(--color-rage); color: #fff; }
+  100% { text-shadow: 0 0 4px var(--color-rage); color: var(--color-rage); }
+}
+@keyframes tiltBlink {
+  0%, 100% { color: #555; text-shadow: none; }
+  50% { color: var(--color-gnr); text-shadow: 0 0 10px var(--color-gnr); }
+}
+
+.mode-blink.glow-nirvana { animation: pulseGlowNirvana 1s infinite; }
+.mode-blink.glow-gnr { animation: pulseGlowGnr 1s infinite; }
+.mode-blink.glow-ratm { animation: pulseGlowRage 1s infinite; }
+.tilt-blink { animation: tiltBlink 0.5s infinite; }
+
+/* Band Modes Progress */
+.band-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.band-item {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-dim);
+}
+
+.band-item.lit {
+  color: #FFFFFF;
+}
+
+.inactive-badge {
+  font-family: var(--font-digital);
+  font-size: 0.8rem;
+  color: #444450;
+}
+
+.active-badge {
+  font-family: var(--font-digital);
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #000;
+}
+
+.glow-nirvana { background: var(--color-nirvana); box-shadow: 0 0 8px var(--color-nirvana); }
+.glow-gnr { background: var(--color-gnr); box-shadow: 0 0 8px var(--color-gnr); }
+.glow-rage { background: var(--color-rage); box-shadow: 0 0 8px var(--color-rage); }
+
+.instruction-hint {
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
+  margin-top: 6px;
+}
+
+/* Control Buttons */
+.game-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  flex: 1;
+  background: linear-gradient(135deg, #1f2029 0%, #15161d 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn:hover {
+  border-color: var(--color-rage);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn.active {
+  background: linear-gradient(135deg, var(--color-purple) 0%, #6a00a8 100%);
+  border-color: #FFFFFF;
+  box-shadow: 0 0 12px var(--color-purple);
+}
+
+.btn-secondary {
+  opacity: 0.8;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-gnr);
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.3);
+}
+
+/* Controls table */
+.controls-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  color: var(--color-text-dim);
+}
+
+.controls-table tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.controls-table tr:last-child {
+  border-bottom: none;
+}
+
+.controls-table td {
+  padding: 8px 0;
+}
+
+.controls-table td:first-child {
+  font-weight: 600;
+  width: 120px;
+}
+
+.key-badge {
+  display: inline-block;
+  background: #191922;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: var(--font-digital);
+  font-size: 0.78rem;
+  text-align: center;
+  color: #FFFFFF;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  min-width: 24px;
+}
+
+/* Footer Styling */
+.app-footer {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #444450;
+  margin-top: 10px;
+}
