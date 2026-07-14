@@ -21,10 +21,13 @@
           <span></span>
         </button>
 
-        <div id="score-panel" class="hud-score">
+        <div id="score-panel" class="hud-score" aria-expanded="false">
           <div class="score-compact">
             <span class="hud-label">Score</span>
             <strong id="score-val">0</strong>
+          </div>
+          <div class="scoreboard-ball-count" aria-label="Bolas restantes">
+            <strong id="scoreboard-balls-val">3</strong>
           </div>
           <div class="score-expanded" aria-hidden="true">
             <div>
@@ -45,10 +48,22 @@
         <div id="balls-indicator" class="hud-balls" aria-label="Bolas restantes"></div>
       </div>
 
+      <div id="objective-hud" class="objective-hud" aria-live="polite">
+        <span class="objective-copy"><b>OBJETIVO</b> <span id="objective-text">Golpea un bumper</span></span>
+        <span id="combo-badge" class="combo-badge">COMBO x1.0</span>
+      </div>
+
       <section class="cabinet-wrapper" aria-label="Playfield">
         <div class="cabinet-glow-strip left"></div>
         <div class="playfield-container">
           <canvas id="pinball-canvas"></canvas>
+          <div id="plunger-power" class="plunger-power" role="progressbar" aria-label="Potencia de lanzamiento" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <span class="plunger-power-value">0%</span>
+            <span class="plunger-power-track">
+              <span class="plunger-power-fill"></span>
+            </span>
+            <span class="plunger-power-label">POTENCIA</span>
+          </div>
           <div class="touch-layer" aria-hidden="true">
             <div id="touch-left-flipper" class="touch-zone touch-zone-left"></div>
             <div id="touch-plunger" class="touch-zone touch-zone-plunger"></div>
@@ -79,6 +94,16 @@
           </div>
 
           <button id="start-btn" class="primary-btn" type="button">Start</button>
+        </div>
+      </section>
+
+      <section id="gameover-screen" class="overlay-screen" aria-label="Fin de la partida">
+        <div class="start-panel gameover-panel">
+          <p class="eyebrow">Final set</p>
+          <h2>Game Over</h2>
+          <p class="gameover-score-label">Puntaje final</p>
+          <strong id="gameover-score" class="gameover-score">0</strong>
+          <button id="gameover-restart-btn" class="primary-btn" type="button">Restart</button>
         </div>
       </section>
 
@@ -120,6 +145,20 @@
           </ul>
         </div>
 
+        <div class="panel-section scoring-rules">
+          <h3 class="section-title">Scoring</h3>
+          <ul class="scoring-list">
+            <li><span>Bumper</span><strong>1.000</strong></li>
+            <li><span>Slingshot</span><strong>500</strong></li>
+            <li><span>Target</span><strong>2.500</strong></li>
+            <li><span>Spinner</span><strong>1.500</strong></li>
+            <li><span>Completar targets</span><strong>20.000</strong></li>
+            <li><span>Completar ROCK</span><strong>25.000 + 1x</strong></li>
+            <li><span>Activar banda</span><strong>15.000 + 1x</strong></li>
+          </ul>
+          <p class="scoring-note">Encadena impactos antes de que termine la barra para subir el combo hasta x3.</p>
+        </div>
+
         <div class="panel-section game-controls">
           <button id="music-toggle" class="btn" type="button">Music Off</button>
           <button id="reset-btn" class="btn btn-secondary" type="button">Restart</button>
@@ -127,7 +166,7 @@
 
         <div class="panel-section help-section">
           <h3 class="section-title">Controls</h3>
-          <p class="instruction-hint">Tap abajo izquierda/derecha para flippers. En desktop: A/flecha izquierda, L/flecha derecha y Space para lanzar.</p>
+          <p class="instruction-hint">Tap abajo izquierda/derecha para flippers. Mantén presionado el borde derecho y suelta para lanzar. En desktop: A/flecha izquierda, L/flecha derecha y Space.</p>
         </div>
       </aside>
     </main>

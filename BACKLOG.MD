@@ -33,7 +33,7 @@ Objetivo: una maquina de pinball rapida, tactil, visualmente potente, con buena 
 | Estado | Item | Motivo | Criterio de aceptacion |
 | --- | --- | --- | --- |
 | Hecho | Escalar tablero al alto total del viewport | El tablero debe sentirse como app nativa en telefono. | El playfield usa todo el alto disponible sin cortar elementos importantes ni deformar la fisica. |
-| Pendiente | Validar experiencia en dispositivo real | La experiencia principal es en telefono y hay detalles que solo aparecen jugando con pulgares. | En telefono real se revisa proporcion, encuadre, menu, start, zonas tactiles, plunger, scroll accidental y legibilidad. |
+| En progreso | Validar experiencia en dispositivo real | La experiencia principal es en telefono y hay detalles que solo aparecen jugando con pulgares. | En telefono real se revisa proporcion, encuadre, menu, start, zonas tactiles, plunger, scroll accidental y legibilidad. |
 | Hecho | Soportar pantallas Retina | El canvas puede verse borroso por no usar `devicePixelRatio`. | El tablero se renderiza nitido en pantallas de alta densidad. |
 | Hecho | Definir controles tactiles de plunger | El lanzamiento debe ser natural en telefono. | Hay gesto claro para cargar/soltar el plunger, usable con pulgar y con feedback visual. |
 | Hecho | Agregar feedback visual de zonas tactiles | El jugador debe sentir que sus taps entraron, aunque las zonas sean invisibles durante juego normal. | Tocar flippers/plunger muestra feedback breve y sutil sin tapar la bola ni distraer. |
@@ -41,10 +41,10 @@ Objetivo: una maquina de pinball rapida, tactil, visualmente potente, con buena 
 | Hecho | Hacer funcional la dificultad inicial | El selector inicial existe, pero todavia no cambia reglas. | Elegir dificultad modifica parametros concretos de partida y queda reflejado en el menu. |
 | Hecho | Bloquear zoom accidental del viewport | Si el telefono queda con zoom, el usuario pierde la vista completa del tablero. | Pinch/doble tap no hacen zoom durante la partida y el meta viewport impide escala manual. |
 | Hecho | Convertir score en tablero desplegable | El score fijo tapa demasiado espacio visual en una pantalla chica. | En reposo el score ocupa una linea compacta; al sumar puntos se expande, muestra detalle y se contrae con animacion. |
-| Pendiente | Revisar balance de rebotes y fisica | La sensacion de pinball depende de buenos rebotes. | Flippers, drenajes, rampa, slingshots y bumpers se sienten consistentes tras pruebas manuales. |
-| Pendiente | Mejorar scoring y objetivos | El usuario quiere puntajes entretenidos y progresion clara. | Hay reglas visibles de puntos, combos/multiplicadores y feedback al lograr objetivos. |
-| Pendiente | Simular componentes 3D en el playfield | La grafica debe sentirse mas premium y fisica. | Bumpers, flippers, lanes, targets y bola tienen volumen, sombras, brillos y profundidad legible. |
-| Pendiente | Subir calidad visual general | La grafica debe ser una parte central de la experiencia. | El juego tiene direccion visual coherente, assets pulidos y alta legibilidad en pantalla pequena. |
+| En progreso | Revisar balance de rebotes y fisica | La sensacion de pinball depende de buenos rebotes. | Flippers, drenajes, rampa, slingshots y bumpers se sienten consistentes tras pruebas manuales. |
+| En progreso | Mejorar scoring y objetivos | El usuario quiere puntajes entretenidos y progresion clara. | Hay reglas visibles de puntos, combos/multiplicadores y feedback al lograr objetivos. |
+| En progreso | Simular componentes 3D en el playfield | La grafica debe sentirse mas premium y fisica. | Bumpers, flippers, lanes, targets y bola tienen volumen, sombras, brillos y profundidad legible. |
+| En progreso | Subir calidad visual general | La grafica debe ser una parte central de la experiencia. | El juego tiene direccion visual coherente, assets pulidos y alta legibilidad en pantalla pequena. |
 
 ## P2 - Calidad tecnica
 
