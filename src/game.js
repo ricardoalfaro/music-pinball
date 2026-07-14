@@ -78,7 +78,7 @@ function lowerY(y) {
 
 // Background Image
 const bgImage = new Image();
-bgImage.src = 'assets/rock-wallpaper-user.png';
+bgImage.src = new URL('../assets/rock-wallpaper-user.png', import.meta.url).href;
 
 // Ball object
 const ball = {
@@ -91,6 +91,7 @@ const ball = {
   rampProgress: 0,
   rampSpeed: 0.05,
   stuckTime: 0,
+  pocketTime: 0,
 };
 
 // Plunger object
@@ -394,6 +395,7 @@ function resetBall() {
   ball.onRamp = false;
   ball.rampProgress = 0;
   ball.stuckTime = 0;
+  ball.pocketTime = 0;
 }
 
 function startGame() {
@@ -968,6 +970,32 @@ function updatePhysics(sub_dt) {
       ball.pos.y -= 8;
       ball.stuckTime = 0;
       spawnParticles(ball.pos.x, ball.pos.y, '#FFFFFF', 10);
+      audio.playSlingshot();
+    }
+
+    // The rear side of either lower slingshot can form a narrow mechanical
+    // pocket with its guide rail. A ball may keep jittering there forever, so
+    // speed-only ball search never fires. Detect those two exact cavities and
+    // pulse the ball toward the open center after a short grace period.
+    const pocketTop = lowerY(575);
+    const pocketBottom = lowerY(705);
+    const inLeftSlingPocket = ball.pos.x > 72 && ball.pos.x < 170
+      && ball.pos.y > pocketTop && ball.pos.y < pocketBottom;
+    const inRightSlingPocket = ball.pos.x > 300 && ball.pos.x < 398
+      && ball.pos.y > pocketTop && ball.pos.y < pocketBottom;
+    if ((inLeftSlingPocket || inRightSlingPocket) && speed < 310) {
+      ball.pocketTime += sub_dt;
+    } else {
+      ball.pocketTime = 0;
+    }
+    if (ball.pocketTime >= 0.85) {
+      const horizontalKick = inLeftSlingPocket ? 430 : -430;
+      ball.pos.x += inLeftSlingPocket ? 10 : -10;
+      ball.pos.y -= 12;
+      ball.vel = Vec.create(horizontalKick, -760);
+      ball.pocketTime = 0;
+      ball.stuckTime = 0;
+      spawnParticles(ball.pos.x, ball.pos.y, '#FF6A00', 12);
       audio.playSlingshot();
     }
 

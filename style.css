@@ -12,7 +12,8 @@
   --panel-border: rgba(255, 255, 255, 0.12);
   --font-main: 'Inter', system-ui, -apple-system, sans-serif;
   --font-display: 'Syne', sans-serif;
-  --font-digital: 'DSEG7 Classic', 'Orbitron', monospace;
+  --font-digital: 'Orbitron', monospace;
+  --font-seven-segment: 'DSEG7 Classic', 'Orbitron', monospace;
   --color-nirvana: #F7E018;
   --color-gnr: #FF3B30;
   --color-rage: #00F2FE;
@@ -171,9 +172,8 @@ button {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 8px;
   min-width: 0;
 }
 
@@ -225,10 +225,11 @@ button {
 #score-val {
   display: block;
   color: #FF6A00;
-  font-family: var(--font-digital);
+  font-family: var(--font-seven-segment);
   font-size: clamp(1.3rem, 6.3vw, 1.75rem);
   letter-spacing: 0.025em;
-  line-height: 1.05;
+  line-height: 1;
+  transform: translateY(0.08em);
   text-shadow: 0 0 7px #FF2D00, 0 0 18px rgba(255, 106, 0, 0.72);
 }
 
@@ -238,6 +239,23 @@ button {
   font-size: clamp(1.65rem, 8.4vw, 2.85rem);
   text-align: center;
   text-overflow: clip;
+  white-space: nowrap;
+}
+
+.hud-score:not(.is-expanded) .score-compact .hud-label {
+  position: absolute;
+  top: 50%;
+  left: 13%;
+  transform: translateY(-50%);
+}
+
+.hud-score:not(.is-expanded) #score-val {
+  position: absolute;
+  top: 50%;
+  left: 62%;
+  width: 68%;
+  transform: translate(-50%, -42%);
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -258,7 +276,7 @@ button {
 
 #scoreboard-balls-val {
   color: #FF520A;
-  font-family: var(--font-digital);
+  font-family: var(--font-seven-segment);
   font-size: clamp(1rem, 5.4vw, 1.85rem);
   line-height: 1;
   text-shadow: 0 0 6px #FF2100, 0 0 15px rgba(255, 82, 10, 0.82);

@@ -9,6 +9,21 @@
 
 **Findings**
 
+- [P1] Production playfield background was missing
+  - Location: full canvas playfield in the supplied iPhone captures.
+  - Evidence: the canvas rendered against its black fallback while the chrome rails and game elements remained visible.
+  - Impact: the primary rock artwork and visual hierarchy disappeared in production.
+  - Fix: resolve the wallpaper through `new URL(..., import.meta.url)` so Vite fingerprints and emits it into the production bundle.
+- [P1] Balls could jitter indefinitely behind either lower slingshot
+  - Location: narrow cavities between each slingshot and its adjacent guide rails.
+  - Evidence: supplied captures show the ball resting behind both the left and right sling assemblies.
+  - Impact: the current speed-only ball search can reset continuously when collision jitter remains above its threshold.
+  - Fix: detect residence in either cavity and apply a center/upward ball-search pulse after 0.85 seconds.
+- [P1] Compact score was vertically and horizontally displaced
+  - Location: top compact scoreboard.
+  - Evidence: the supplied iPhone capture shows the DSEG digits touching the upper crop while the SCORE label shifts the combined row.
+  - Impact: the main value is harder to read and does not sit inside the intended display aperture.
+  - Fix: position label and digits independently and use the seven-segment font only for numeric displays.
 - [P1] Rendered visual comparison is blocked
   - Location: full mobile playfield.
   - Evidence: both source references and the generated wallpaper were opened, but no browser-rendered implementation capture could be produced.
@@ -54,5 +69,6 @@
 - Scoreboard/ball-search pass: reserved 118 CSS pixels for a larger amber score display, recalculated the canvas from the remaining playfield dimensions, blocked context menus, and added automatic stuck-ball recovery; rendered comparison remains blocked.
 - Supplied-scoreboard pass: integrated the exact provided image as the top scoreboard backdrop and strengthened long-press suppression with captured context/select/drag events plus non-passive touch handlers; rendered comparison remains blocked.
 - Full-scoreboard pass: replaced the prior backdrop with the complete 1672 x 941 supplied artwork, added a locally bundled DSEG7 Classic display face, placed the live total in the main score aperture, placed remaining balls in the central BALLS aperture, and retained the compact-to-full scoring animation; rendered comparison remains blocked.
+- Production screenshot repair pass: bundled the canvas wallpaper through Vite, separated word-capable digital typography from DSEG numeric typography, centered the compact score independently from its label, and added explicit left/right sling-pocket recovery; a fresh implementation capture remains required.
 
 final result: blocked
