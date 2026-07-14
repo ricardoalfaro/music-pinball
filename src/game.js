@@ -142,9 +142,9 @@ const walls = [];
 
 // Circular Bumpers
 const bumpers = [
-  { id: 'nirvana', pos: Vec.create(235, 245), radius: 30, label: 'NIRVANA', color: '#F7E018', flashTime: 0, activeColor: '#FFF8B3', points: 1000 },
+  { id: 'nirvana', pos: Vec.create(235, 245), radius: 30, label: 'NIRVANA', color: '#FF2D20', flashTime: 0, activeColor: '#FFFFFF', points: 1000 },
   { id: 'gnr', pos: Vec.create(150, 350), radius: 26, label: 'GNR', color: '#FF3B30', flashTime: 0, activeColor: '#FF9E9E', points: 1000 },
-  { id: 'rage', pos: Vec.create(320, 350), radius: 26, label: 'RATM', color: '#00F2FE', flashTime: 0, activeColor: '#A8F9FF', points: 1000 },
+  { id: 'rage', pos: Vec.create(320, 350), radius: 26, label: 'RATM', color: '#B80F0A', flashTime: 0, activeColor: '#FFFFFF', points: 1000 },
   { id: 'amp', pos: Vec.create(92, 268), radius: 19, label: 'AMP', color: '#FF453A', flashTime: 0, activeColor: '#FFC1BC', points: 1250 },
   { id: 'skull', pos: Vec.create(382, 265), radius: 19, label: 'SKULL', color: '#D7D7DC', flashTime: 0, activeColor: '#FFFFFF', points: 1500 },
   { id: 'riff', pos: Vec.create(235, 438), radius: 22, label: 'RIFF', color: '#FF2D20', flashTime: 0, activeColor: '#FFD0CC', points: 1500 },
@@ -177,9 +177,9 @@ const slingshots = [
 
 // Target definitions
 const dropTargets = [
-  { id: 'target_1', p1: Vec.create(30, 440), p2: Vec.create(45, 450), active: true, color: '#A100FF', flashTime: 0 },
-  { id: 'target_2', p1: Vec.create(30, 470), p2: Vec.create(45, 480), active: true, color: '#A100FF', flashTime: 0 },
-  { id: 'target_3', p1: Vec.create(30, 500), p2: Vec.create(45, 510), active: true, color: '#A100FF', flashTime: 0 },
+  { id: 'target_1', p1: Vec.create(30, 440), p2: Vec.create(45, 450), active: true, color: '#D31510', flashTime: 0 },
+  { id: 'target_2', p1: Vec.create(30, 470), p2: Vec.create(45, 480), active: true, color: '#D31510', flashTime: 0 },
+  { id: 'target_3', p1: Vec.create(30, 500), p2: Vec.create(45, 510), active: true, color: '#D31510', flashTime: 0 },
   { id: 'target_4', p1: Vec.create(405, 440), p2: Vec.create(420, 450), active: true, color: '#FF3B30', flashTime: 0 },
   { id: 'target_5', p1: Vec.create(405, 470), p2: Vec.create(420, 480), active: true, color: '#FF3B30', flashTime: 0 },
   { id: 'target_6', p1: Vec.create(405, 500), p2: Vec.create(420, 510), active: true, color: '#FF3B30', flashTime: 0 }
@@ -202,15 +202,15 @@ const multiplierInserts = [2, 3, 4, 5, 6].map((value, index) => ({
 }));
 
 const modeInserts = [
-  { label: 'N', color: '#F7E018', isLit: () => state.bandHits.nirvana >= 5 },
+  { label: 'N', color: '#FF3B30', isLit: () => state.bandHits.nirvana >= 5 },
   { label: 'G', color: '#FF3B30', isLit: () => state.bandHits.gnr >= 5 },
-  { label: 'R', color: '#00F2FE', isLit: () => state.bandHits.rage >= 5 },
-  { label: 'R', color: '#FF007F', isLit: () => rolloverLanes[0].lit },
+  { label: 'R', color: '#B80F0A', isLit: () => state.bandHits.rage >= 5 },
+  { label: 'R', color: '#FF2D20', isLit: () => rolloverLanes[0].lit },
   { label: 'O', color: '#FF453A', isLit: () => rolloverLanes[1].lit },
   { label: 'C', color: '#FF6961', isLit: () => rolloverLanes[2].lit },
-  { label: 'K', color: '#FFFFFF', isLit: () => rolloverLanes[3].lit },
-  { label: 'TGT', color: '#C86BFF', isLit: () => dropTargets.every((target) => !target.active) },
-  { label: 'RAMP', color: '#00F2FE', isLit: () => ball.onRamp },
+  { label: 'K', color: '#FF8A80', isLit: () => rolloverLanes[3].lit },
+  { label: 'TGT', color: '#D31510', isLit: () => dropTargets.every((target) => !target.active) },
+  { label: 'RAMP', color: '#FF3B30', isLit: () => ball.onRamp },
 ].map((insert, index) => ({
   ...insert,
   x: 190 + (index % 3) * 40,
@@ -219,20 +219,20 @@ const modeInserts = [
 }));
 
 const playfieldPosts = [
-  { pos: Vec.create(78, 390), radius: 8, color: '#00F2FE', flashTime: 0 },
+  { pos: Vec.create(78, 390), radius: 8, color: '#FF3B30', flashTime: 0 },
   { pos: Vec.create(392, 390), radius: 8, color: '#FF3B30', flashTime: 0 },
-  { pos: Vec.create(115, lowerY(535)), baseY: 535, radius: 9, color: '#F7E018', flashTime: 0 },
+  { pos: Vec.create(115, lowerY(535)), baseY: 535, radius: 9, color: '#D31510', flashTime: 0 },
   { pos: Vec.create(350, lowerY(535)), baseY: 535, radius: 9, color: '#FF453A', flashTime: 0 },
-  { pos: Vec.create(150, lowerY(650)), baseY: 650, radius: 8, color: '#C86BFF', flashTime: 0 },
-  { pos: Vec.create(310, lowerY(650)), baseY: 650, radius: 8, color: '#00F2FE', flashTime: 0 },
+  { pos: Vec.create(150, lowerY(650)), baseY: 650, radius: 8, color: '#B80F0A', flashTime: 0 },
+  { pos: Vec.create(310, lowerY(650)), baseY: 650, radius: 8, color: '#FF3B30', flashTime: 0 },
 ];
 
 // Rollover Lanes (R-O-C-K at top)
 const rolloverLanes = [
-  { id: 'r', x1: 170, x2: 205, y: 110, lit: false, label: 'R', color: '#FF007F' },
-  { id: 'o', x1: 205, x2: 240, y: 110, lit: false, label: 'O', color: '#00FF66' },
-  { id: 'c', x1: 240, x2: 275, y: 110, lit: false, label: 'C', color: '#00FFFF' },
-  { id: 'k', x1: 275, x2: 310, y: 110, lit: false, label: 'K', color: '#FFFF00' }
+  { id: 'r', x1: 170, x2: 205, y: 110, lit: false, label: 'R', color: '#FF2D20' },
+  { id: 'o', x1: 205, x2: 240, y: 110, lit: false, label: 'O', color: '#D31510' },
+  { id: 'c', x1: 240, x2: 275, y: 110, lit: false, label: 'C', color: '#B80F0A' },
+  { id: 'k', x1: 275, x2: 310, y: 110, lit: false, label: 'K', color: '#FF6B61' }
 ];
 
 // Ramp definition
@@ -977,22 +977,22 @@ function updatePhysics(sub_dt) {
     // pocket with its guide rail. A ball may keep jittering there forever, so
     // speed-only ball search never fires. Detect those two exact cavities and
     // pulse the ball toward the open center after a short grace period.
-    const pocketTop = lowerY(575);
-    const pocketBottom = lowerY(705);
-    const inLeftSlingPocket = ball.pos.x > 72 && ball.pos.x < 170
+    const pocketTop = lowerY(515);
+    const pocketBottom = lowerY(735);
+    const inLeftSlingPocket = ball.pos.x < 190
       && ball.pos.y > pocketTop && ball.pos.y < pocketBottom;
-    const inRightSlingPocket = ball.pos.x > 300 && ball.pos.x < 398
+    const inRightSlingPocket = ball.pos.x > 280
       && ball.pos.y > pocketTop && ball.pos.y < pocketBottom;
-    if ((inLeftSlingPocket || inRightSlingPocket) && speed < 310) {
+    if (inLeftSlingPocket || inRightSlingPocket) {
       ball.pocketTime += sub_dt;
     } else {
       ball.pocketTime = 0;
     }
-    if (ball.pocketTime >= 0.85) {
-      const horizontalKick = inLeftSlingPocket ? 430 : -430;
-      ball.pos.x += inLeftSlingPocket ? 10 : -10;
-      ball.pos.y -= 12;
-      ball.vel = Vec.create(horizontalKick, -760);
+    if (ball.pocketTime >= 0.75) {
+      // Move outside the nearby collision surfaces first. A velocity-only
+      // pulse can be cancelled immediately by the same rail that trapped it.
+      ball.pos = Vec.create(WIDTH / 2, lowerY(500));
+      ball.vel = Vec.create(inLeftSlingPocket ? 120 : -120, -680);
       ball.pocketTime = 0;
       ball.stuckTime = 0;
       spawnParticles(ball.pos.x, ball.pos.y, '#FF6A00', 12);
@@ -1264,7 +1264,7 @@ function updateParticles(dt) {
 // Draw a flipper (glowing capsule/rod)
 function drawFlipper(flipper) {
   const seg = getFlipperSegment(flipper);
-  const color = flipper.isLeft ? '#FF3B30' : '#00F2FE';
+  const color = flipper.isLeft ? '#FF3B30' : '#B80F0A';
   const bodyGradient = ctx.createLinearGradient(seg.p1.x, seg.p1.y - 10, seg.p1.x, seg.p1.y + 10);
   bodyGradient.addColorStop(0, '#FFFFFF');
   bodyGradient.addColorStop(0.22, color);
@@ -1375,9 +1375,9 @@ function drawCoverImage(image, x, y, width, height) {
 
 function drawPlayfieldLighting() {
   const lightPools = [
-    { x: 235, y: 250, radius: 105, color: '247, 224, 24' },
+    { x: 235, y: 250, radius: 105, color: '255, 59, 48' },
     { x: 150, y: 360, radius: 88, color: '255, 59, 48' },
-    { x: 320, y: 360, radius: 88, color: '0, 242, 254' },
+    { x: 320, y: 360, radius: 88, color: '184, 15, 10' },
     { x: 230, y: lowerY(675), radius: 150, color: '255, 45, 32' },
     { x: 235, y: 470, radius: 125, color: '255, 45, 32' },
   ];
@@ -1614,13 +1614,13 @@ function render() {
   }
   ctx.stroke();
 
-  // Transparent acrylic bed with cyan edge light.
+  // Transparent acrylic bed with a red edge light.
   ctx.shadowBlur = 16;
-  ctx.shadowColor = '#00F2FE';
-  ctx.strokeStyle = 'rgba(210, 240, 255, 0.42)';
+  ctx.shadowColor = '#FF3B30';
+  ctx.strokeStyle = 'rgba(255, 118, 108, 0.42)';
   ctx.lineWidth = 24;
   ctx.stroke();
-  ctx.strokeStyle = 'rgba(16, 52, 66, 0.48)';
+  ctx.strokeStyle = 'rgba(88, 10, 8, 0.48)';
   ctx.lineWidth = 17;
   ctx.stroke();
 
@@ -1646,7 +1646,7 @@ function render() {
   }
   ctx.stroke();
   ctx.restore();
-  drawTableLabel('TOUR RAMP', 74, 372, '#00F2FE', 'left');
+  drawTableLabel('TOUR RAMP', 74, 372, '#FF3B30', 'left');
 
   // 6. Draw Drop Targets
   for (const target of dropTargets) {
@@ -1696,7 +1696,7 @@ function render() {
     }
     if (target.flashTime > 0) target.flashTime--;
   }
-  drawTableLabel('POWER CHORDS', 28, 425, '#C86BFF', 'left');
+  drawTableLabel('POWER CHORDS', 28, 425, '#D31510', 'left');
   drawTableLabel('HELLFIRE', 422, 425, '#FF6961', 'right');
 
   // Raised illuminated posts, each one also participates in physics.
@@ -1868,12 +1868,12 @@ function render() {
     ctx.restore();
 
     if (sling.flashTime > 0) {
-      drawHitSpark((sling.p1.x + sling.p2.x) / 2, (sling.p1.y + sling.p2.y) / 2, '#FF2D7A', 0.85);
+      drawHitSpark((sling.p1.x + sling.p2.x) / 2, (sling.p1.y + sling.p2.y) / 2, '#FF3B30', 0.85);
     }
     if (sling.flashTime > 0) sling.flashTime--;
   }
-  drawTableLabel('SLING', 108, lowerY(580), '#FF5CAC');
-  drawTableLabel('SLING', 342, lowerY(580), '#FF5CAC');
+  drawTableLabel('SLING', 108, lowerY(580), '#FF3B30');
+  drawTableLabel('SLING', 342, lowerY(580), '#FF3B30');
 
   // 8. Draw Bumpers
   for (const bumper of bumpers) {
@@ -2070,7 +2070,7 @@ function render() {
     // Aura glow if on ramp
     if (ball.onRamp) {
       ctx.shadowBlur = 18;
-      ctx.shadowColor = '#00F2FE';
+      ctx.shadowColor = '#FF3B30';
     } else {
       ctx.shadowBlur = 5;
       ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
@@ -2108,10 +2108,10 @@ function render() {
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     ctx.font = 'bold 36px "Orbitron", sans-serif';
-    ctx.fillStyle = '#00F2FE';
+    ctx.fillStyle = '#FF3B30';
     ctx.textAlign = 'center';
     ctx.shadowBlur = 20;
-    ctx.shadowColor = '#00F2FE';
+    ctx.shadowColor = '#FF3B30';
     ctx.fillText('90s ALTERNATIVE', WIDTH/2, HEIGHT/2 - 80);
     
     ctx.font = 'bold 48px "Orbitron", sans-serif';

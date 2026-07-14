@@ -14,10 +14,10 @@
   --font-display: 'Syne', sans-serif;
   --font-digital: 'Orbitron', monospace;
   --font-seven-segment: 'DSEG7 Classic', 'Orbitron', monospace;
-  --color-nirvana: #F7E018;
+  --color-nirvana: #FF2D20;
   --color-gnr: #FF3B30;
-  --color-rage: #00F2FE;
-  --color-purple: #A100FF;
+  --color-rage: #B80F0A;
+  --color-purple: #D31510;
   --color-text: #F3F3F5;
   --color-text-dim: #A3A3AF;
   --safe-top: env(safe-area-inset-top, 0px);
@@ -45,7 +45,7 @@ body {
 body {
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 59, 48, 0.18), transparent 34%),
-    radial-gradient(circle at 50% 100%, rgba(0, 242, 254, 0.14), transparent 36%),
+    radial-gradient(circle at 50% 100%, rgba(184, 15, 10, 0.16), transparent 36%),
     #050507;
   color: var(--color-text);
   font-family: var(--font-main);
@@ -140,7 +140,7 @@ button {
   height: 2px;
   border-radius: 999px;
   background: #FFFFFF;
-  box-shadow: 0 0 8px rgba(0, 242, 254, 0.45);
+  box-shadow: 0 0 8px rgba(255, 59, 48, 0.45);
 }
 
 .hud-score {
@@ -295,8 +295,8 @@ button {
 }
 
 #last-score-val {
-  color: #39FF14;
-  text-shadow: 0 0 10px rgba(57, 255, 20, 0.38);
+  color: #FF6B61;
+  text-shadow: 0 0 10px rgba(255, 59, 48, 0.38);
 }
 
 .hud-balls {
@@ -350,7 +350,7 @@ button {
   flex: 0 0 auto;
   overflow: hidden;
   padding: 3px 6px;
-  border: 1px solid rgba(247, 224, 24, 0.22);
+  border: 1px solid rgba(255, 59, 48, 0.22);
   border-radius: 5px;
   color: rgba(255, 255, 255, 0.46);
   font-family: var(--font-digital);
@@ -371,15 +371,15 @@ button {
 }
 
 .combo-badge.is-active {
-  border-color: rgba(247, 224, 24, 0.62);
+  border-color: rgba(255, 59, 48, 0.62);
   color: var(--color-nirvana);
-  background: rgba(247, 224, 24, 0.09);
-  box-shadow: 0 0 12px rgba(247, 224, 24, 0.2);
+  background: rgba(255, 59, 48, 0.09);
+  box-shadow: 0 0 12px rgba(255, 59, 48, 0.2);
 }
 
 .guitar-icon {
   font-size: 1.05rem;
-  filter: drop-shadow(0 0 7px rgba(247, 224, 24, 0.42));
+  filter: drop-shadow(0 0 7px rgba(255, 59, 48, 0.42));
 }
 
 .guitar-icon.spent {
@@ -412,7 +412,7 @@ button {
 
 .scoring-note {
   margin: 10px 0 0;
-  color: rgba(247, 224, 24, 0.78);
+  color: rgba(255, 107, 97, 0.84);
   font-size: 0.68rem;
   line-height: 1.45;
 }
@@ -506,7 +506,7 @@ button {
 
 .plunger-power.is-charging {
   opacity: 1;
-  filter: drop-shadow(0 0 8px rgba(247, 224, 24, 0.42));
+  filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.42));
 }
 
 .plunger-power.is-hidden {
@@ -518,7 +518,7 @@ button {
   font-size: 10px;
   font-weight: 800;
   line-height: 1;
-  text-shadow: 0 0 7px rgba(247, 224, 24, 0.65);
+  text-shadow: 0 0 7px rgba(255, 59, 48, 0.65);
 }
 
 .plunger-power-track {
@@ -536,7 +536,7 @@ button {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(to top, #00F2FE 0%, #F7E018 58%, #FF3B30 100%);
+  background: linear-gradient(to top, #5C0503 0%, #D31510 58%, #FF3B30 100%);
   transform: scaleY(var(--power-level));
   transform-origin: bottom;
   transition: transform 40ms linear;
@@ -618,13 +618,13 @@ button {
 }
 
 .touch-zone-right::after {
-  background: radial-gradient(ellipse at bottom right, rgba(0, 242, 254, 0.28), transparent 68%);
-  box-shadow: inset 0 -1px 0 rgba(0, 242, 254, 0.28);
+  background: radial-gradient(ellipse at bottom right, rgba(184, 15, 10, 0.28), transparent 68%);
+  box-shadow: inset 0 -1px 0 rgba(184, 15, 10, 0.28);
 }
 
 .touch-zone-plunger::after {
-  background: radial-gradient(ellipse at bottom, rgba(247, 224, 24, 0.22), transparent 70%);
-  box-shadow: inset 0 -1px 0 rgba(247, 224, 24, 0.22);
+  background: radial-gradient(ellipse at bottom, rgba(255, 59, 48, 0.22), transparent 70%);
+  box-shadow: inset 0 -1px 0 rgba(255, 59, 48, 0.22);
 }
 
 .touch-zone.is-pressed::after {
@@ -658,7 +658,7 @@ button {
   padding: calc(var(--safe-top) + 22px) 22px calc(var(--safe-bottom) + 22px);
   background:
     linear-gradient(180deg, rgba(5, 5, 7, 0.34), rgba(5, 5, 7, 0.86)),
-    radial-gradient(circle at 50% 25%, rgba(0, 242, 254, 0.20), transparent 38%);
+    radial-gradient(circle at 50% 25%, rgba(184, 15, 10, 0.20), transparent 38%);
   backdrop-filter: blur(12px);
 }
 
@@ -688,10 +688,10 @@ button {
 .gameover-score {
   display: block;
   margin: 6px 0 24px;
-  color: #39FF14;
+  color: #FF6B61;
   font-family: var(--font-digital);
   font-size: clamp(1.8rem, 9vw, 2.8rem);
-  text-shadow: 0 0 18px rgba(57, 255, 20, 0.42);
+  text-shadow: 0 0 18px rgba(255, 59, 48, 0.42);
 }
 
 .overlay-screen.active {
@@ -731,7 +731,7 @@ h1 {
   font-size: 2.55rem;
   line-height: 0.95;
   text-transform: uppercase;
-  text-shadow: 0 0 16px rgba(255, 59, 48, 0.42), 0 0 24px rgba(0, 242, 254, 0.18);
+  text-shadow: 0 0 16px rgba(255, 59, 48, 0.52), 0 0 24px rgba(184, 15, 10, 0.24);
 }
 
 h2 {
@@ -797,10 +797,10 @@ h3,
 
 .primary-btn {
   width: 100%;
-  border-color: rgba(0, 242, 254, 0.45);
+  border-color: rgba(255, 59, 48, 0.45);
   background: linear-gradient(135deg, var(--color-gnr), var(--color-purple) 52%, var(--color-rage));
   color: #FFFFFF;
-  box-shadow: 0 0 26px rgba(0, 242, 254, 0.25), 0 14px 34px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 26px rgba(255, 59, 48, 0.25), 0 14px 34px rgba(0, 0, 0, 0.35);
 }
 
 .settings-panel {
@@ -863,8 +863,8 @@ h3,
 }
 
 .glow-gold {
-  color: #FFB700;
-  text-shadow: 0 0 10px rgba(255, 183, 0, 0.4);
+  color: #FF6B61;
+  text-shadow: 0 0 10px rgba(255, 59, 48, 0.4);
 }
 
 .stats-grid {
@@ -883,7 +883,7 @@ h3,
 
 .highlight-text {
   color: var(--color-rage);
-  text-shadow: 0 0 8px rgba(0, 242, 254, 0.5);
+  text-shadow: 0 0 8px rgba(255, 59, 48, 0.5);
 }
 
 .band-list {
@@ -952,9 +952,9 @@ h3,
 }
 
 .btn.active {
-  border-color: rgba(0, 242, 254, 0.55);
-  background: linear-gradient(135deg, var(--color-purple), #271D55);
-  box-shadow: 0 0 14px rgba(161, 0, 255, 0.55);
+  border-color: rgba(255, 59, 48, 0.55);
+  background: linear-gradient(135deg, #D31510, #3A0504);
+  box-shadow: 0 0 14px rgba(255, 59, 48, 0.55);
 }
 
 .btn-secondary {
